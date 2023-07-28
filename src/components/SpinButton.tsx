@@ -1,9 +1,14 @@
-import React, { useState, MouseEvent } from "react";
+import React, { useState, MouseEvent, useEffect } from "react";
 import "./SpinButton.css";
 
-const SpinButton: React.FC = () => {
+interface Props {
+  people: string;
+}
+
+function SpinButton({ people }: Props) {
   const [count, setCount] = useState<number>(0);
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
+  const [announcement, setAnnouncement] = useState<string | null>(null);
 
   const increment = () => {
     setCount((prevCount) => (prevCount >= 3 ? prevCount : prevCount + 1));
@@ -17,12 +22,35 @@ const SpinButton: React.FC = () => {
     setIsTooltipVisible(!isTooltipVisible);
   };
 
+  useEffect(() => {
+    if (announcement) {
+      const liveRegion = document.getElementById("live-region");
+      if (liveRegion) {
+        liveRegion.textContent = announcement;
+      }
+    }
+  }, [announcement]);
+
+  useEffect(() => {
+    setAnnouncement(`현재 인원 ${count}`);
+  }, [count]);
+
+  const handleDecrementClick = () => {
+    decrement();
+  };
+
+  const handleIncrementClick = () => {
+    increment();
+  };
+
   return (
-    <section className="spinButtonContainer" aria-label="승객 선택 영역입니다.">
+    <section
+      className="spinButtonContainer"
+      aria-label={`${people} 선택 영역입니다.`}
+    >
       <div>
-        <h1>승객 선택</h1>
         <div className="spinButtonLabel">
-          <label htmlFor="input-old">성인</label>
+          <label htmlFor="input-old">{people}</label>
           <div
             className="helpIcon"
             onMouseEnter={toggleTooltip}
@@ -38,9 +66,9 @@ const SpinButton: React.FC = () => {
         </div>
 
         <button
-          onClick={decrement}
+          onClick={handleDecrementClick}
           className="spinButton"
-          aria-label="성인 탑승자 한명 줄이기"
+          aria-label={`${people} 탑승자 한명 줄이기`}
         >
           -
         </button>
@@ -51,17 +79,26 @@ const SpinButton: React.FC = () => {
           readOnly
           className="spinButtonInput"
           value={count}
+          aria-live="polite"
+          aria-atomic="true"
         />
         <button
-          onClick={increment}
+          onClick={handleIncrementClick}
           className="spinButton"
-          aria-label="성인 탑승자 한명 늘리기"
+          aria-label={`${people} 탑승자 한명 늘리기`}
         >
           +
         </button>
       </div>
+
+      <div
+        id="live-region"
+        className="announce"
+        aria-live="polite"
+        aria-atomic="true"
+      ></div>
     </section>
   );
-};
+}
 
 export default SpinButton;
