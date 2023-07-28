@@ -1,12 +1,11 @@
-import React from "react";
 import "./App.css";
 import SpinButton from "./components/SpinButton";
 
 function App() {
   return (
-    <div className="App">
+    <main className="App">
       <SpinButton />
-    </div>
+    </main>
   );
 }
 

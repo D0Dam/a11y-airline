@@ -6,11 +6,11 @@ const SpinButton: React.FC = () => {
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
 
   const increment = () => {
-    setCount((prevCount) => prevCount + 1);
+    setCount((prevCount) => (prevCount >= 3 ? prevCount : prevCount + 1));
   };
 
   const decrement = () => {
-    setCount((prevCount) => prevCount - 1);
+    setCount((prevCount) => (prevCount <= 0 ? prevCount : prevCount - 1));
   };
 
   const toggleTooltip = (event: MouseEvent<HTMLDivElement>) => {
@@ -18,11 +18,11 @@ const SpinButton: React.FC = () => {
   };
 
   return (
-    <section className="spinButtonContainer">
+    <section className="spinButtonContainer" aria-label="승객 선택 영역입니다.">
       <div>
         <h1>승객 선택</h1>
         <div className="spinButtonLabel">
-          <label>성인</label>
+          <label htmlFor="input-old">성인</label>
           <div
             className="helpIcon"
             onMouseEnter={toggleTooltip}
@@ -30,21 +30,33 @@ const SpinButton: React.FC = () => {
           >
             ?
             {isTooltipVisible && (
-              <span className="tooltip">최대 인원수는 3명까지 가능합니다</span>
+              <span className="tooltip" role="tooltip">
+                최대 인원수는 3명까지 가능합니다
+              </span>
             )}
           </div>
         </div>
-        <button onClick={decrement} className="spinButton">
+
+        <button
+          onClick={decrement}
+          className="spinButton"
+          aria-label="성인 탑승자 한명 줄이기"
+        >
           -
         </button>
         <input
+          id="input-old"
           type="text"
           role="spinbutton"
           readOnly
           className="spinButtonInput"
           value={count}
         />
-        <button onClick={increment} className="spinButton">
+        <button
+          onClick={increment}
+          className="spinButton"
+          aria-label="성인 탑승자 한명 늘리기"
+        >
           +
         </button>
       </div>
